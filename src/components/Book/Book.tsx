@@ -1,82 +1,55 @@
-// components/Book.tsx
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import styles from "./Book.module.css";
 
-const pagesContent = [
-  "Open Me, please!",
-  "Hello!",
-  "Hello there!",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-];
+interface BookProps {
+  children: React.ReactNode;
+}
 
-const Page: React.FC<{
-  content: string;
-  index: number;
-  flipped: boolean;
-  onClick: () => void;
-}> = ({ content, index, flipped, onClick }) => (
-  <div
-    className={`${styles.page} ${flipped ? styles.flipped : ""}`}
-    style={{ zIndex: pagesContent.length - index }}
-    onClick={onClick}
-  >
-    <div className={styles.pageContent}>
-      <p>{content}</p>
-    </div>
-  </div>
-);
+const Book: React.FC<BookProps> = ({ children }) => {
+  useEffect(() => {
+    const pages = document.getElementsByClassName(styles.page);
 
-const Book: React.FC = () => {
-  const [flippedPages, setFlippedPages] = useState<boolean[]>(
-    new Array(pagesContent.length).fill(false)
-  );
-
-  const togglePageFlip = (index: number) => {
-    const newFlippedPages = [...flippedPages];
-    newFlippedPages[index] = !newFlippedPages[index];
-    if (index % 2 === 0 && index < pagesContent.length - 1) {
-      newFlippedPages[index + 1] = newFlippedPages[index];
-    } else if (index % 2 !== 0 && index > 0) {
-      newFlippedPages[index - 1] = newFlippedPages[index];
+    for (let i = 0; i < pages.length; i++) {
+      const page = pages[i] as HTMLElement;
+      if (i % 2 === 0) {
+        page.style.zIndex = String(pages.length - i);
+      }
     }
-    setFlippedPages(newFlippedPages);
-  };
+
+    const handlePageClick = (event: MouseEvent) => {
+      const target = event.currentTarget as HTMLElement;
+
+      const pageNum = (target as any).pageNum;
+      if (pageNum % 2 === 0) {
+        target.classList.remove(styles.flipped);
+        (target.previousElementSibling as HTMLElement).classList.remove(styles.flipped);
+      } else {
+        target.classList.add(styles.flipped);
+        (target.nextElementSibling as HTMLElement).classList.add(styles.flipped);
+      }
+    };
+
+    for (let i = 0; i < pages.length; i++) {
+      const page = pages[i] as HTMLElement;
+      (page as any).pageNum = i + 1;
+      page.addEventListener("click", handlePageClick);
+    }
+
+    return () => {
+      for (let i = 0; i < pages.length; i++) {
+        const page = pages[i] as HTMLElement;
+        page.removeEventListener("click", handlePageClick);
+      }
+    };
+  }, []);
 
   return (
     <div className={styles.book}>
-      <div className={styles.pages}>
-        {pagesContent.map((content, i) => (
-          <Page
-            key={i}
-            content={content}
-            index={i}
-            flipped={flippedPages[i]}
-            onClick={() => togglePageFlip(i)}
-          />
+      <div id={styles.pages} className={styles.pages}>
+        {React.Children.map(children, (child, i) => (
+          <div key={i} className={styles.page}>
+            {child}
+          </div>
         ))}
       </div>
     </div>

@@ -1,5 +1,5 @@
-/* components/Book.module.css */
 .book {
+  transition: opacity 0.4s 0.2s;
   perspective: 250vw;
 }
 
@@ -10,40 +10,21 @@
   transform-style: preserve-3d;
   backface-visibility: hidden;
   border-radius: 4px;
+  margin: 0 auto;
 }
 
 .page {
   width: 30vw;
   height: 44vw;
+  background-color: #242424;
   position: absolute;
   top: 0;
-  margin: 0;
   transform-origin: 0 0;
-  transition: transform 1.4s;
+  transition: transform 1.4s, background 0.7s;
   backface-visibility: hidden;
   transform-style: preserve-3d;
   cursor: pointer;
   user-select: none;
-  background-color: #242424;
-}
-
-.page p {
-  margin-top: 8vw;
-  text-align: center;
-  font-size: 5vw;
-  color: #bababa;
-}
-
-.page:before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0);
-  transition: background 0.7s;
-  z-index: 2;
 }
 
 .page:nth-child(odd) {
@@ -58,7 +39,7 @@
   transform: rotateY(-15deg);
 }
 
-.page:nth-child(odd):hover:before {
+.page:nth-child(odd):hover::before {
   background: rgba(0, 0, 0, 0.03);
 }
 
@@ -68,11 +49,10 @@
   transform-origin: 100% 0;
   left: 0;
   border-radius: 4px 0 0 4px;
-  border-color: black;
   background-image: linear-gradient(to left, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0) 10%);
 }
 
-.page:nth-child(even):before {
+.page:nth-child(even)::before {
   background: rgba(0, 0, 0, 0.2);
 }
 
@@ -81,7 +61,7 @@
   transform: rotateY(-180deg);
 }
 
-.page.flipped:nth-child(odd):before {
+.page.flipped:nth-child(odd)::before {
   background: rgba(0, 0, 0, 0.2);
 }
 
@@ -94,10 +74,22 @@
   transform: rotateY(15deg);
 }
 
-.page.flipped:nth-child(even):hover:before {
+.page.flipped:nth-child(even):hover::before {
   background: rgba(0, 0, 0, 0.03);
 }
 
-.page.flipped:nth-child(even):before {
+.page.flipped:nth-child(even)::before {
   background: rgba(0, 0, 0, 0);
+}
+
+.page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0);
+  transition: 0.7s;
+  z-index: 2;
 }
