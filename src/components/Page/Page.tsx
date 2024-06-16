@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./Page.module.css";
+import Image from "next/image";
 
 interface PageProps {
   content: string;
